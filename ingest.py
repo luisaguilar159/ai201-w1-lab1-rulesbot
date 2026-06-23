@@ -1,8 +1,9 @@
 import os
 from config import DOCS_PATH
+from typing import List, Dict
 
 
-def load_documents():
+def load_documents() -> List[Dict]:
     """Load all .txt rule documents from the docs folder."""
     documents = []
     for filename in sorted(os.listdir(DOCS_PATH)):
@@ -20,7 +21,7 @@ def load_documents():
     return documents
 
 
-def chunk_document(text, game_name):
+def chunk_document(text: str, game_name: str) -> List[Dict]:
     """
     Split a rule document into chunks ready for embedding.
 

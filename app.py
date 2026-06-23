@@ -2,6 +2,7 @@ import gradio as gr
 from ingest import load_documents, chunk_document
 from retriever import embed_and_store, retrieve, get_collection
 from generator import generate_response
+from typing import List, Dict
 
 
 # ---------------------------------------------------------------------------
@@ -25,7 +26,7 @@ def run_ingestion():
 
     print("Ingesting rule documents...")
     documents = load_documents()
-    all_chunks = []
+    all_chunks: List[Dict] = []
 
     for doc in documents:
         chunks = chunk_document(doc["text"], doc["game"])
@@ -45,7 +46,7 @@ def run_ingestion():
 # Chat handler
 # ---------------------------------------------------------------------------
 
-def chat(message, history):
+def chat(message: str, history: List[Dict]):
     if not message.strip():
         return ""
     retrieved = retrieve(message)
@@ -107,7 +108,7 @@ with gr.Blocks(
 
         with gr.Column(scale=1, min_width=180):
             gr.HTML("""
-                <div style="background:#f5f3ff; border:1px solid #ddd6fe;
+                <div style="border:1px solid #ddd6fe;
                             border-radius:10px; padding:1rem; margin-top:0.5rem;">
                     <p style="font-size:0.8rem; font-weight:700; color:#4c1d95;
                                margin:0 0 0.5rem; letter-spacing:0.05em;">

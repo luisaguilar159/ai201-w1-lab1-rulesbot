@@ -1,6 +1,7 @@
 import chromadb
 from chromadb.utils import embedding_functions
 from config import CHROMA_COLLECTION, CHROMA_PATH, EMBEDDING_MODEL, N_RESULTS
+from typing import List, Dict
 
 # Embedding function and ChromaDB client are initialized once at module load.
 # sentence-transformers downloads the model on first use — this may take
@@ -21,7 +22,7 @@ def get_collection():
     return _collection
 
 
-def embed_and_store(chunks):
+def embed_and_store(chunks: List[Dict]):
     """
     Embed a list of chunks and store them in the vector database.
 
