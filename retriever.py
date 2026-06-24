@@ -1,7 +1,7 @@
 import chromadb
 from chromadb.utils import embedding_functions
 from config import CHROMA_COLLECTION, CHROMA_PATH, EMBEDDING_MODEL, N_RESULTS
-from typing import List, Dict
+from typing import List, Dict, TypedDict
 
 # Embedding function and ChromaDB client are initialized once at module load.
 # sentence-transformers downloads the model on first use — this may take
@@ -15,6 +15,12 @@ _collection = _client.get_or_create_collection(
     embedding_function=_ef,
     metadata={"hnsw:space": "cosine"},
 )
+
+# Custom class for retrieved chunks for retrieve() function
+class ReturnedChunk(TypedDict, total=False):
+    text: str
+    game: str
+    distance: float
 
 
 def get_collection():
@@ -47,7 +53,7 @@ def embed_and_store(chunks: List[Dict]):
     print(f"Stored {_collection.count()} total chunks in the vector database.")
 
 
-def retrieve(query, n_results=N_RESULTS):
+def retrieve(query: str, n_results: int = N_RESULTS) -> List[ReturnedChunk]:
     """
     Find the most relevant rule chunks for a user's question.
 
@@ -70,4 +76,22 @@ def retrieve(query, n_results=N_RESULTS):
         return []
 
     # Your implementation here.
+
+    # Get the most relevant chunks (3)
+    res = _collection.query(
+        query_texts=[query],
+        n_results=n_results, # return 3 most relevant chunks
+        include=["documents", "metadatas", "distances"]
+    )
+
+    # extract the chunks to the output list
+    out_chunks: List[ReturnedChunk] = []
+    for doc, meta, dist in zip(res["documents"][0], res["metadatas"][0], res["distances"][0]):
+        curr_chunk: ReturnedChunk = {}
+        curr_chunk["text"] = doc
+        curr_chunk["game"] = str(meta["game"])
+        curr_chunk["distance"] = dist
+        out_chunks.append(curr_chunk)
+    if len(out_chunks) > 0:
+        return out_chunks
     return []
