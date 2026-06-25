@@ -93,5 +93,7 @@ def retrieve(query: str, n_results: int = N_RESULTS) -> List[ReturnedChunk]:
         curr_chunk["distance"] = dist
         out_chunks.append(curr_chunk)
     if len(out_chunks) > 0:
+        # for chunk in out_chunks:
+        #     print(f"[{chunk['game']}] (dist: {chunk['distance']:.3f}) {chunk['text'][:80]}...")
         return out_chunks
     return []

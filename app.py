@@ -46,7 +46,7 @@ def run_ingestion():
 # Chat handler
 # ---------------------------------------------------------------------------
 
-def chat(message: str, history: List[Dict]):
+def chat(message: str, history: List[Dict]) -> str:
     if not message.strip():
         return ""
     retrieved = retrieve(message)
